@@ -3,7 +3,8 @@ netstat -na | awk '/ESTABLISHED/{split($5,T,":");print T[1]}' | sort | grep -v -
 
 for i in $(cat /var/log/limmitip)
 do
-    if i not in $(cat /tmp/goodip);then
+    limip=$(cat /tmp/goodip | grep $i)
+    if [[ -z $limip ]];then
         rep=$(iptables-save | grep $i)
         if [[ -z $rep ]];then
             /sbin/iptables -A INPUT -s $i -m limit --limit 5/minute -j ACCEPT
